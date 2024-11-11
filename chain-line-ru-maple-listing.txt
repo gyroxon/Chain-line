@@ -1,0 +1,43 @@
+restart;   #03.01.2021 by gyroxon
+
+with(plots):
+with(plottools):
+
+A := 3:
+x := A*ln(tan(t/2)) + A*cos(t):
+y := A*sin(t):
+N := 50:
+
+t1 := evalf(0):
+t2 := evalf(Pi):
+
+tract := plot([x, y, t = t1 .. t2], -10 .. 10, 0 .. 4, color = maroon, thickness = 2, legend = "трактриса", scaling = constrained):
+
+xt := diff(x, t):
+yt := diff(y, t):
+
+xN := simplify(-s*yt + x);
+yN := simplify( s*xt + y);
+
+normals:=proc(T::float)
+    local X, Y, XN, YN, l;
+    X := eval(x, t = T):
+    Y := eval(y, t = T):
+    XN := eval(xN, t = T):
+    YN := eval(yN, t = T):
+    l  := plot([XN(T, s), YN(T, s), s = -4 .. 4], color = navy, legend = "нормали"):
+    display([l], scaling = constrained);
+end proc;
+
+tracenormals := proc(t)
+    normals(t);
+end proc;
+
+chain := plot([A*ln(tan(t/2)), A/2*(1 + tan(t/2)^2)/tan(t/2), t = t1 .. t2], -10 .. 10, 0 .. 10, color = coral, thickness = 3, legend = "цепная линия", scaling = constrained):
+
+V := [seq(t1 .. t2, (t2 - t1)/N)]:
+
+animate(tracenormals, [T], T = V, trace = 49, background = [tract, chain], view = [-10 .. 10, -1 .. 10], tickmarks = [[-9 = "-3A", -6 = "-2A", -3 = "-A", 3 = "3A", 6 = "2A", 9 = "3A"], [3 = "A"]], scaling = constrained, title = "Цепная линия как эволюта трактрисы");
+
+
+
